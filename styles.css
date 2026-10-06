@@ -18,12 +18,14 @@
 body {
     background-color: var(--bg-dark);
     color: var(--text-light);
-    overflow: hidden;
+    /* CAMBIO: Se removió overflow: hidden para permitir el scroll natural */
+    overflow-y: auto; 
+    overflow-x: hidden;
 }
 
 .view {
     display: none;
-    height: 100vh;
+    min-height: 100vh; /* CAMBIO: Se cambió height por min-height para que crezca si hay más contenido */
     width: 100vw;
 }
 
@@ -141,6 +143,7 @@ button:hover {
     font-size: 24px;
     padding: 0;
     width: 40px;
+    cursor: pointer; /* Añadido para que el cursor cambie al pasar por las rayitas */
 }
 
 .navbar h2 {
@@ -168,7 +171,8 @@ button:hover {
     box-shadow: 4px 0 10px rgba(0,0,0,0.5);
 }
 
-.sidebar.open {
+/* CAMBIO: Se cambió .sidebar.open por .sidebar.active para coincidir con React */
+.sidebar.active {
     left: 0;
 }
 
@@ -208,18 +212,19 @@ button:hover {
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden;
+    /* CAMBIO: Se removió overflow: hidden de aquí también */
 }
 
 #map-container {
-    flex: 1;
+    /* CAMBIO: Para asegurar que el mapa tenga un alto definido y deje espacio al panel abajo */
+    min-height: 400px; 
     position: relative;
 }
 
 #map {
     width: 100%;
     height: 100%;
-    background-color: #2a3b4c; /* Color temporal antes de cargar API */
+    background-color: #2a3b4c; 
 }
 
 .info-panel {
@@ -258,6 +263,7 @@ button:hover {
     margin-bottom: 10px;
     color: var(--text-muted);
 }
+
 /* === VISTA DE REPORTES (CHAT) === */
 #reports-view {
     background-color: var(--bg-dark);
@@ -272,7 +278,6 @@ button:hover {
     gap: 15px;
 }
 
-/* Acordeón de Fechas */
 .date-group {
     background: var(--bg-panel);
     border-radius: 8px;
@@ -312,7 +317,6 @@ button:hover {
     display: flex;
 }
 
-/* Burbujas de Chat */
 .chat-bubble {
     background-color: #2a3b4c;
     padding: 12px 15px;
@@ -357,7 +361,6 @@ button:hover {
     font-size: 20px;
 }
 
-/* Caja de entrada del chat */
 .chat-input-area {
     background-color: var(--bg-panel);
     padding: 15px 20px;
@@ -368,7 +371,7 @@ button:hover {
     display: flex;
     align-items: flex-end;
     gap: 10px;
-    flex-direction: row; /* Fuerza a estar en línea */
+    flex-direction: row; 
 }
 
 #report-text {
@@ -422,12 +425,11 @@ button:hover {
     margin-left: 55px;
 }
 
-/* Notificación Push (Toast) */
 .toast {
     position: fixed;
     top: 20px;
     left: 50%;
-    transform: translateX(-50%) translateY(-100px); /* Oculto arriba */
+    transform: translateX(-50%) translateY(-100px); 
     background-color: var(--bg-panel);
     border-left: 5px solid var(--accent-color);
     color: white;
@@ -439,16 +441,16 @@ button:hover {
 }
 
 .toast.show {
-    transform: translateX(-50%) translateY(0); /* Desliza hacia abajo */
+    transform: translateX(-50%) translateY(0); 
 }
 
 .toast h4 { margin-bottom: 5px; color: var(--accent-color); }
 .toast p { font-size: 0.9rem; color: #cbd5e1; }
 
-/* Ocultar el panel de instrucciones de texto del ruteador */
 .leaflet-routing-container {
     display: none !important;
 }
+
 /* === ESTILOS NUEVOS PARA REGISTRO Y UBICACIÓN === */
 #video-fondo-reg {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;
@@ -469,14 +471,12 @@ button:hover {
     text-decoration: underline;
 }
 
-/* Botón deshabilitado hasta aceptar TyC */
 #btn-register:disabled {
     background-color: #475569;
     color: #94a3b8;
     cursor: not-allowed;
 }
 
-/* Fila del selector y botón de ubicación */
 .selector-row {
     display: flex;
     gap: 10px;
@@ -504,10 +504,7 @@ button:hover {
 
 .eta-text {
     font-size: 0.9rem;
-    color: #f59e0b; /* Color naranja de alerta */
+    color: #f59e0b; 
     font-weight: bold;
     margin-top: 5px;
 }
-
-
-

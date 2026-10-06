@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './styles.css'; // Mantenemos tu archivo de estilos intacto
 
 function App() {
-  const [vistaActual, setVistaActual] = useState('login'); // 
+  const [vistaActual, setVistaActual] = useState('login');
+  const [menuAbierto, setMenuAbierto] = useState(false); // <-- NUEVO ESTADO PARA EL MENÚ // 
   // Este bloque carga el mapa SOLO cuando la vista actual es 'home'
   useEffect(() => {
     if (vistaActual === 'home') {
@@ -91,18 +92,24 @@ function App() {
       {/* VISTA 3: HOME / MAPA */}
       {vistaActual === 'home' && (
         <div id="home-view" className="view active">
-          <div id="sidebar" className="sidebar">
+          {/* CAMBIO 1: El sidebar ahora evalúa si 'menuAbierto' es verdadero para agregar la clase 'active' */}
+          <div id="sidebar" className={`sidebar ${menuAbierto ? 'active' : ''}`}>
             <div className="profile-info">
               <div className="avatar">👤</div>
               <h3 id="user-name">Sergio D'banhi</h3>
               <p id="user-email">dbas@tecnologico.edu.mx</p>
             </div>
             <hr />
-            <button id="logout-btn" className="logout-btn" onClick={() => setVistaActual('login')}>Cerrar Sesión</button>
+            {/* CAMBIO 2: Al cerrar sesión, también cerramos el menú para que no se quede abierto al volver a entrar */}
+            <button id="logout-btn" className="logout-btn" onClick={() => {
+                setVistaActual('login');
+                setMenuAbierto(false);
+            }}>Cerrar Sesión</button>
           </div>
 
           <nav className="navbar">
-            <button id="menu-btn" className="menu-btn">☰</button>
+            {/* CAMBIO 3: Al hacer clic en las 3 rayitas, cambiamos el estado del menú */}
+            <button id="menu-btn" className="menu-btn" onClick={() => setMenuAbierto(!menuAbierto)}>☰</button>
             <h2>TrashRoutes</h2>
             <button id="btn-ver-reportes" className="report-btn">Ver Reportes</button>
           </nav>
@@ -110,7 +117,7 @@ function App() {
           <main className="main-content">
             <div id="map-container">
               <div id="map" style={{ height: '400px', width: '100%' }}>
-                  {/* El código de inicialización del mapa de Leaflet irá aquí más adelante */}
+                  {/* El mapa de Leaflet se inicializa automáticamente gracias al useEffect */}
               </div>
             </div>
             <div className="info-panel">
