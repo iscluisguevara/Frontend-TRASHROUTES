@@ -4,112 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrashRoutes - Geolocalización de Recolección</title>
+    <!-- Mantenemos los estilos de los mapas -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Este es el contenedor vacío donde React inyectará toda tu aplicación -->
+    <div id="root"></div>
 
-    <!-- VISTA 1: INICIO DE SESIÓN -->
-    <div id="login-view" class="view active">
-        <video autoplay muted loop id="video-fondo">
-            <source src="tu_video_de_fondo.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-        <div class="login-container">
-            <h1>TrashRoutes</h1>
-            <p>Rastreo de recolección en tiempo real</p>
-            <form id="login-form">
-                <input type="email" id="email" placeholder="Correo electrónico" required>
-                <input type="password" id="password" placeholder="Contraseña" required>
-                <button type="submit">Iniciar Sesión</button>
-            </form>
-            <p class="register-link"><a href="#" id="link-to-register">¿No tienes cuenta? Regístrate aquí</a></p>
-        </div>
-    </div>
-
-    <!-- VISTA 2: REGISTRO -->
-    <div id="register-view" class="view">
-        <video autoplay muted loop id="video-fondo-reg">
-            <source src="tu_video_de_fondo.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-        <div class="login-container">
-            <h1>Crear Cuenta</h1>
-            <form id="register-form">
-                <input type="text" id="reg-name" placeholder="Nombre de usuario" required>
-                <input type="email" id="reg-email" placeholder="Correo electrónico" required>
-                <input type="password" id="reg-password" placeholder="Contraseña" required>
-                <input type="password" id="reg-password-confirm" placeholder="Repetir contraseña" required>
-                
-                <div class="permissions-group">
-                    <label><input type="checkbox" id="perm-location"> Permitir uso de mi ubicación en tiempo real</label>
-                    <label><input type="checkbox" id="perm-notifications"> Recibir alertas y notificaciones push</label>
-                </div>
-
-                <div class="tyc-group">
-                    <label>
-                        <input type="checkbox" id="accept-tyc"> 
-                        Acepto los <a href="#" id="link-tyc">Términos y Condiciones y Políticas de Privacidad</a>
-                    </label>
-                </div>
-
-                <button type="submit" id="btn-register" disabled>Registrarse</button>
-            </form>
-            <p class="register-link"><a href="#" id="link-to-login">¿Ya tienes cuenta? Inicia sesión</a></p>
-        </div>
-    </div>
-
-    <!-- VISTA 3: HOME / MAPA -->
-    <div id="home-view" class="view">
-        <div id="sidebar" class="sidebar">
-            <div class="profile-info">
-                <div class="avatar">👤</div>
-                <h3 id="user-name">Usuario Demo</h3>
-                <p id="user-email">usuario@correo.com</p>
-            </div>
-            <hr>
-            <button id="logout-btn" class="logout-btn">Cerrar Sesión</button>
-        </div>
-
-        <nav class="navbar">
-            <button id="menu-btn" class="menu-btn">☰</button>
-            <h2>TrashRoutes</h2>
-            <button id="btn-ver-reportes" class="report-btn">Ver Reportes</button>
-        </nav>
-
-        <main class="main-content">
-            <div id="map-container">
-                <div id="map"></div>
-            </div>
-            <div class="info-panel">
-                <div class="location-header">
-                    <h3>📍 Zona: <span id="current-zone">Tecnológico</span></h3>
-                </div>
-                <div class="route-selector">
-                    <label for="rutas-cercanas">Rutas cercanas:</label>
-                    <!-- Nueva fila para juntar lista de rutas y botón de ubicación -->
-                    <div class="selector-row">
-                        <select id="rutas-cercanas"></select>
-                        <button id="btn-mi-ubicacion" title="Mostrar mi ubicación real">📍 Mi ubicación</button>
-                    </div>
-                    <p id="mis-coordenadas" class="coordenadas-text">Coordenadas: Buscando...</p>
-                    <p id="eta-text" class="eta-text hidden">Llegada estimada del camión: Calculando...</p>
-                </div>
-                <div class="schedule-info" style="margin-top: 10px;">
-                    <h4>Horario de recolección</h4>
-                    <p><strong>Días:</strong> <span id="route-days">---</span></p>
-                    <p><strong>Horario:</strong> <span id="route-time">---</span></p>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- VISTA 4: -->
-    <!-- (Pega aquí el mismo código del <div id="reports-view"> y el <div id="push-notification"> que ya tenías) -->
-    
+    <!-- Mantenemos los scripts de los mapas -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-    <script src="app.js"></script>
+    <!-- Le indicamos a Vite cuál es el archivo principal de React -->
+    <script type="module" src="/app.jsx"></script>
 </body>
 </html>
