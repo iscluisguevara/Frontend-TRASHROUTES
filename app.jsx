@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './styles.css'; // Mantenemos tu archivo de estilos intacto
 
 function App() {
-  const [vistaActual, setVistaActual] = useState('home'); // Empecemos directo en 'home' para probar
-
+  const [vistaActual, setVistaActual] = useState('login'); // 
   // Este bloque carga el mapa SOLO cuando la vista actual es 'home'
   useEffect(() => {
     if (vistaActual === 'home') {
