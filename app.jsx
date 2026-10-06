@@ -1,11 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles.css'; // Mantenemos tu archivo de estilos intacto
 
 function App() {
-  // En lugar de usar clases 'active' con Vanilla JS, usamos un estado de React
-  // para controlar qué vista se muestra. Empezamos mostrando el 'login'.
-  const [vistaActual, setVistaActual] = useState('login');
+  const [vistaActual, setVistaActual] = useState('home'); // Empecemos directo en 'home' para probar
+
+  // Este bloque carga el mapa SOLO cuando la vista actual es 'home'
+  useEffect(() => {
+    if (vistaActual === 'home') {
+      //  Inicializamos el mapa centrado en el Tecnológico de Matamoros
+      const map = window.L.map('map').setView([25.8540, -97.5140], 15); 
+
+      //  Cargamos las texturas de OpenStreetMap
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      //  Agregamos un marcador de prueba para la ruta
+      window.L.marker([25.8540, -97.5140]).addTo(map)
+        .bindPopup('Zona Tecnológico')
+        .openPopup();
+
+      //  Limpieza: destruye el mapa viejo si cambias de vista, para evitar errores de Leaflet
+      return () => {
+        map.remove();
+      };
+    }
+  }, [vistaActual]);
 
   return (
     <>
