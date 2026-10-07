@@ -1,32 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import './styles.css'; // Mantenemos tu archivo de estilos intacto
+import './styles.css';
 
 function App() {
   const [vistaActual, setVistaActual] = useState('login');
-  const [menuAbierto, setMenuAbierto] = useState(false); // <-- NUEVO ESTADO PARA EL MENÚ // 
-  // Este bloque carga el mapa SOLO cuando la vista actual es 'home'
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
   useEffect(() => {
     if (vistaActual === 'home') {
-      //  Inicializamos el mapa centrado en el Tecnológico de Matamoros
       const map = window.L.map('map').setView([25.8540, -97.5140], 15); 
 
-      //  Cargamos las texturas de OpenStreetMap
       window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
-      //  Agregamos un marcador de prueba para la ruta
       window.L.marker([25.8540, -97.5140]).addTo(map)
         .bindPopup('Zona Tecnológico')
         .openPopup();
 
-      //  Limpieza: destruye el mapa viejo si cambias de vista, para evitar errores de Leaflet
       return () => {
         map.remove();
       };
     }
   }, [vistaActual]);
+
+  const manejarLogin = async (e) => {
+    e.preventDefault();
+
+    const correoInput = document.getElementById('email-login').value; 
+    const passwordInput = document.getElementById('password-login').value;
+
+    try {
+      const peticion = await fetch('http://127.0.0.1:8000/api/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          correo_electronico: correoInput,
+          password: passwordInput
+        })
+      });
+
+      const respuesta = await peticion.json();
+
+      if (peticion.ok) {
+        console.log("Token recibido:", respuesta.token);
+        
+        // Guardamos los datos reales del usuario
+        localStorage.setItem('token', respuesta.token);
+        localStorage.setItem('nombre', respuesta.nombre);
+        localStorage.setItem('correo', respuesta.correo);
+        
+        setVistaActual('home'); 
+      } else {
+        alert(respuesta.error || "Correo o contraseña incorrectos");
+      }
+    } catch (error) {
+      console.error("Error de conexión:", error);
+      alert("No se pudo conectar con el servidor de Django.");
+    }
+  };
 
   return (
     <>
@@ -41,10 +75,9 @@ function App() {
             <h1>TrashRoutes</h1>
             <p>Rastreo de recolección en tiempo real</p>
             <form id="login-form">
-              <input type="email" id="email" placeholder="Correo electrónico" required />
-              <input type="password" id="password" placeholder="Contraseña" required />
-              {/* Al hacer clic, simulamos el login y cambiamos a la vista 'home' */}
-              <button type="button" onClick={() => setVistaActual('home')}>Iniciar Sesión</button>
+              <input type="email" id="email-login" placeholder="Correo electrónico" required />
+              <input type="password" id="password-login" placeholder="Contraseña" required />
+              <button type="button" onClick={manejarLogin}>Iniciar Sesión</button>
             </form>
             <p className="register-link">
               <a href="#" id="link-to-register" onClick={() => setVistaActual('register')}>¿No tienes cuenta? Regístrate aquí</a>
@@ -91,16 +124,48 @@ function App() {
 
       {/* VISTA 3: HOME / MAPA */}
       {vistaActual === 'home' && (
-        <div id="home-view" className="view active">
-          {/* CAMBIO 1: El sidebar ahora evalúa si 'menuAbierto' es verdadero para agregar la clase 'active' */}
-          <div id="sidebar" className={`sidebar ${menuAbierto ? 'active' : ''}`}>
+        <div id="home-view" className="view active" style={{ position: 'relative' }}>
+          
+          {menuAbierto && (
+            <div 
+              onClick={() => setMenuAbierto(false)}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                zIndex: 1500
+              }}
+            ></div>
+          )}
+
+          <div id="sidebar" className={`sidebar ${menuAbierto ? 'active' : ''}`} style={{ zIndex: 2000 }}>
+            <button 
+              onClick={() => setMenuAbierto(false)}
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontSize: '22px',
+                cursor: 'pointer'
+              }}
+            >
+              ✕
+            </button>
+
             <div className="profile-info">
               <div className="avatar">👤</div>
-              <h3 id="user-name">Sergio D'banhi</h3>
-              <p id="user-email">dbas@tecnologico.edu.mx</p>
+              {/* Leemos el nombre y correo guardados */}
+              <h3 id="user-name">{localStorage.getItem('nombre') || 'Usuario'}</h3>
+              <p id="user-email">{localStorage.getItem('correo') || 'correo@ejemplo.com'}</p>
             </div>
             <hr />
-            {/* CAMBIO 2: Al cerrar sesión, también cerramos el menú para que no se quede abierto al volver a entrar */}
+
             <button id="logout-btn" className="logout-btn" onClick={() => {
                 setVistaActual('login');
                 setMenuAbierto(false);
@@ -108,7 +173,6 @@ function App() {
           </div>
 
           <nav className="navbar">
-            {/* CAMBIO 3: Al hacer clic en las 3 rayitas, cambiamos el estado del menú */}
             <button id="menu-btn" className="menu-btn" onClick={() => setMenuAbierto(!menuAbierto)}>☰</button>
             <h2>TrashRoutes</h2>
             <button id="btn-ver-reportes" className="report-btn">Ver Reportes</button>
@@ -116,9 +180,7 @@ function App() {
 
           <main className="main-content">
             <div id="map-container">
-              <div id="map" style={{ height: '400px', width: '100%' }}>
-                  {/* El mapa de Leaflet se inicializa automáticamente gracias al useEffect */}
-              </div>
+              <div id="map" style={{ height: '400px', width: '100%' }}></div>
             </div>
             <div className="info-panel">
               <div className="location-header">
