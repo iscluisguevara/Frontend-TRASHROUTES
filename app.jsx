@@ -6,6 +6,7 @@ function App() {
   const [vistaActual, setVistaActual] = useState('login');
   const [menuAbierto, setMenuAbierto] = useState(false);
 
+  // --- EFECTO DEL MAPA ---
   useEffect(() => {
     if (vistaActual === 'home') {
       const map = window.L.map('map').setView([25.8540, -97.5140], 15); 
@@ -24,6 +25,7 @@ function App() {
     }
   }, [vistaActual]);
 
+  // --- FUNCIÓN DE INICIAR SESIÓN ---
   const manejarLogin = async (e) => {
     e.preventDefault();
 
@@ -58,6 +60,54 @@ function App() {
       }
     } catch (error) {
       console.error("Error de conexión:", error);
+      alert("No se pudo conectar con el servidor de Django.");
+    }
+  };
+
+  // --- FUNCIÓN DE REGISTRO ---
+  const manejarRegistro = async (e) => {
+    e.preventDefault();
+
+    const nombreInput = document.getElementById('reg-name').value;
+    const correoInput = document.getElementById('reg-email').value;
+    const passwordInput = document.getElementById('reg-password').value;
+    const passwordConfirmInput = document.getElementById('reg-password-confirm').value;
+
+    // Validación básica de contraseñas
+    if (passwordInput !== passwordConfirmInput) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+
+    try {
+      const peticion = await fetch('http://127.0.0.1:8000/api/registro/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: nombreInput,
+          correo_electronico: correoInput,
+          password: passwordInput
+        })
+      });
+
+      const respuesta = await peticion.json();
+
+      if (peticion.ok) {
+        // Registro exitoso, guardamos los datos para el menú lateral
+        localStorage.setItem('token', respuesta.token);
+        localStorage.setItem('nombre', respuesta.nombre);
+        localStorage.setItem('correo', respuesta.correo);
+        
+        // Pasamos al mapa
+        setVistaActual('home'); 
+      } else {
+        // Mostrar errores (ej. correo ya registrado o error de validación)
+        alert(JSON.stringify(respuesta));
+      }
+    } catch (error) {
+      console.error("Error al registrar:", error);
       alert("No se pudo conectar con el servidor de Django.");
     }
   };
@@ -113,7 +163,7 @@ function App() {
                 </label>
               </div>
 
-              <button type="button" id="btn-register" onClick={() => setVistaActual('home')}>Registrarse</button>
+              <button type="button" id="btn-register" onClick={manejarRegistro}>Registrarse</button>
             </form>
             <p className="register-link">
               <a href="#" id="link-to-login" onClick={() => setVistaActual('login')}>¿Ya tienes cuenta? Inicia sesión</a>
@@ -160,7 +210,7 @@ function App() {
 
             <div className="profile-info">
               <div className="avatar">👤</div>
-              {/* Leemos el nombre y correo guardados */}
+              {/* Leemos el nombre y correo guardados dinámicamente */}
               <h3 id="user-name">{localStorage.getItem('nombre') || 'Usuario'}</h3>
               <p id="user-email">{localStorage.getItem('correo') || 'correo@ejemplo.com'}</p>
             </div>
