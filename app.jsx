@@ -1,29 +1,82 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles.css';
+
+
 
 function App() {
   const [vistaActual, setVistaActual] = useState('login');
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
 
   // --- EFECTO DEL MAPA ---
   useEffect(() => {
-    if (vistaActual === 'home') {
-      const map = window.L.map('map').setView([25.8540, -97.5140], 15); 
+      // Verificamos que no exista ya un mapa para no duplicarlo
+      if (vistaActual === 'home' && !mapRef.current) {
+        mapRef.current = window.L.map('map').setView([25.851103, -97.505796], 15); 
+          
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(mapRef.current); // <-- Agregado a mapRef.current
+      }
 
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-
-      window.L.marker([25.8540, -97.5140]).addTo(map)
-        .bindPopup('Zona Tecnológico')
-        .openPopup();
-
+      // La limpieza va aquí, afuera de la geolocalización
       return () => {
-        map.remove();
+        if (mapRef.current) {
+          mapRef.current.remove();
+          mapRef.current = null;
+        }
       };
+    }, [vistaActual]);
+
+    function Obtener_Ubicacion(){
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const longitud = position.coords.longitude;
+            const latitud = position.coords.latitude;
+            
+            
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitud}&lon=${longitud}`;
+            const respuesta = await fetch(url);
+            const datos = await respuesta.json();
+
+            const calle = datos.address.road || "Calle no identificada";
+            const colonia = datos.address.suburb || datos.address.neighbourhood || "Zona Centro";
+            const direccionReal = `${calle}, ${colonia}`;
+            document.getElementById('current-zone').textContent = direccionReal;
+
+            if (mapRef.current) {
+              // 1. Volamos usando el mapa que YA existe
+              mapRef.current.flyTo([latitud, longitud], 15); 
+
+              // 2. Si no hay chincheta, la creamos. Si ya hay, solo la movemos.
+              if (!markerRef.current) {
+                markerRef.current = window.L.marker([latitud, longitud])
+                  .addTo(mapRef.current)
+                  .bindPopup(`Zona: ${direccionReal}`)
+                  .openPopup();
+              } else {
+                markerRef.current.setLatLng([latitud, longitud]);
+              }
+            }
+            
+            // mandar_ubicacion(longitud, latitud); 
+          },
+          (error) => {
+            console.error("Error al obtener la ubicación:", error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 50000, 
+            maximumAge: 0 
+          }
+        );
+      } else {
+        console.error("Tu navegador no soporta la geolocalización.");
+      }
     }
-  }, [vistaActual]);
 
   // --- FUNCIÓN DE INICIAR SESIÓN ---
   const manejarLogin = async (e) => {
@@ -33,7 +86,7 @@ function App() {
     const passwordInput = document.getElementById('password-login').value;
 
     try {
-      const peticion = await fetch('http://127.0.0.1:8000/api/login/', {
+      const peticion = await fetch('http://10.175.6.156:8000/api/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +133,7 @@ function App() {
     }
 
     try {
-      const peticion = await fetch('http://127.0.0.1:8000/api/registro/', {
+      const peticion = await fetch('http://10.175.6.156:8000/api/registro/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +170,7 @@ function App() {
       {/* VISTA 1: INICIO DE SESIÓN */}
       {vistaActual === 'login' && (
         <div id="login-view" className="view active">
-          <video autoPlay muted loop id="video-fondo">
+          <video autoPlay muted loop playsInline id="video-fondo">
             <source src="tu_video_de_fondo.mp4" type="video/mp4" />
           </video>
           <div className="overlay"></div>
@@ -139,7 +192,7 @@ function App() {
       {/* VISTA 2: REGISTRO */}
       {vistaActual === 'register' && (
         <div id="register-view" className="view active">
-          <video autoPlay muted loop id="video-fondo-reg">
+          <video autoPlay muted loop playsInline id="video-fondo-reg">
             <source src="tu_video_de_fondo.mp4" type="video/mp4" />
           </video>
           <div className="overlay"></div>
@@ -234,7 +287,7 @@ function App() {
             </div>
             <div className="info-panel">
               <div className="location-header">
-                <h3>📍 Zona: <span id="current-zone">Tecnológico</span></h3>
+                <h3>📍 Zona: <span id="current-zone"></span></h3>
               </div>
               <div className="route-selector">
                 <label htmlFor="rutas-cercanas">Rutas cercanas:</label>
@@ -242,7 +295,7 @@ function App() {
                   <select id="rutas-cercanas">
                       <option>Ruta 1 - Tecnológico</option>
                   </select>
-                  <button id="btn-mi-ubicacion" title="Mostrar mi ubicación real">📍 Mi ubicación</button>
+                  <button id="btn-mi-ubicacion" title="Mostrar mi ubicación real" onClick={Obtener_Ubicacion}>📍 Mi ubicación</button>
                 </div>
                 <p id="mis-coordenadas" className="coordenadas-text">Coordenadas: Buscando...</p>
                 <p id="eta-text" className="eta-text hidden">Llegada estimada del camión: Calculando...</p>
@@ -259,6 +312,37 @@ function App() {
     </>
   );
 }
+
+
+
+async function mandar_ubicacion(longitude, latitude){
+
+  try {
+      const peticion = await fetch('http://10.175.6.156:8000/api/guardar-ubi-usuario/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          longitud: longitude,
+          latitud:latitude
+        })
+      });
+
+      if (peticion["status"]==200)
+        alert("Se guardo con exito la ubicacion")
+    
+    }
+
+
+catch(error) {
+      console.error("Error de conexión:", error);
+      alert("No se pudo conectar con el servidor de Django.");
+    }
+};
+
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
