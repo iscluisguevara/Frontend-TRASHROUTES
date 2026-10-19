@@ -2,8 +2,10 @@
 :root {
     --bg-dark: #0f172a;
     --bg-panel: #1e293b;
-    --primary-color: #0d9488; /* Azul verdoso oscuro */
-    --accent-color: #14b8a6;  /* Azul verdoso claro */
+    --primary-color: #0d9488;
+    /* Azul verdoso oscuro */
+    --accent-color: #14b8a6;
+    /* Azul verdoso claro */
     --text-light: #f8fafc;
     --text-muted: #94a3b8;
 }
@@ -19,13 +21,14 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-light);
     /* CAMBIO: Se removió overflow: hidden para permitir el scroll natural */
-    overflow-y: auto; 
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
 .view {
     display: none;
-    min-height: 100vh; /* CAMBIO: Se cambió height por min-height para que crezca si hay más contenido */
+    min-height: 100vh;
+    /* CAMBIO: Se cambió height por min-height para que crezca si hay más contenido */
     width: 100vw;
 }
 
@@ -57,7 +60,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(15, 23, 42, 0.7); /* Filtro oscuro */
+    background-color: rgba(15, 23, 42, 0.7);
+    /* Filtro oscuro */
     z-index: -1;
 }
 
@@ -134,7 +138,7 @@ button:hover {
     align-items: center;
     background-color: var(--bg-panel);
     padding: 15px 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
 
@@ -143,7 +147,8 @@ button:hover {
     font-size: 24px;
     padding: 0;
     width: 40px;
-    cursor: pointer; /* Añadido para que el cursor cambie al pasar por las rayitas */
+    cursor: pointer;
+    /* Añadido para que el cursor cambie al pasar por las rayitas */
 }
 
 .navbar h2 {
@@ -153,6 +158,13 @@ button:hover {
 .report-btn {
     padding: 10px 20px;
     border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.profile-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-bottom: 12px;
 }
 
 /* === SIDEBAR === */
@@ -168,7 +180,7 @@ button:hover {
     z-index: 2000;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 0 10px rgba(0,0,0,0.5);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* CAMBIO: Se cambió .sidebar.open por .sidebar.active para coincidir con React */
@@ -199,7 +211,8 @@ button:hover {
 }
 
 .logout-btn {
-    background-color: #ef4444; /* Rojo para cerrar sesión */
+    background-color: #ef4444;
+    /* Rojo para cerrar sesión */
     margin-top: auto;
 }
 
@@ -217,14 +230,14 @@ button:hover {
 
 #map-container {
     /* CAMBIO: Para asegurar que el mapa tenga un alto definido y deje espacio al panel abajo */
-    min-height: 400px; 
+    min-height: 400px;
     position: relative;
 }
 
 #map {
     width: 100%;
     height: 100%;
-    background-color: #2a3b4c; 
+    background-color: #2a3b4c;
 }
 
 .info-panel {
@@ -371,7 +384,7 @@ button:hover {
     display: flex;
     align-items: flex-end;
     gap: 10px;
-    flex-direction: row; 
+    flex-direction: row;
 }
 
 #report-text {
@@ -429,23 +442,30 @@ button:hover {
     position: fixed;
     top: 20px;
     left: 50%;
-    transform: translateX(-50%) translateY(-100px); 
+    transform: translateX(-50%) translateY(-100px);
     background-color: var(--bg-panel);
     border-left: 5px solid var(--accent-color);
     color: white;
     padding: 15px 25px;
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     z-index: 3000;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .toast.show {
-    transform: translateX(-50%) translateY(0); 
+    transform: translateX(-50%) translateY(0);
 }
 
-.toast h4 { margin-bottom: 5px; color: var(--accent-color); }
-.toast p { font-size: 0.9rem; color: #cbd5e1; }
+.toast h4 {
+    margin-bottom: 5px;
+    color: var(--accent-color);
+}
+
+.toast p {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
 
 .leaflet-routing-container {
     display: none !important;
@@ -453,10 +473,17 @@ button:hover {
 
 /* === ESTILOS NUEVOS PARA REGISTRO Y UBICACIÓN === */
 #video-fondo-reg {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
 }
 
-.permissions-group, .tyc-group {
+.permissions-group,
+.tyc-group {
     text-align: left;
     font-size: 0.85rem;
     margin: 15px 0;
@@ -504,7 +531,109 @@ button:hover {
 
 .eta-text {
     font-size: 0.9rem;
-    color: #f59e0b; 
+    color: #f59e0b;
     font-weight: bold;
     margin-top: 5px;
+}
+
+/* Modal.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-family: sans-serif;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #555;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+}
+
+.report-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #444;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Evitar auto-zoom en celulares */
+input,
+textarea,
+select {
+    font-size: 16px !important;
 }
