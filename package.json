@@ -1,5 +1,6 @@
 {
   "name": "frontend-trashroutes",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -15,7 +16,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/iscluisguevara/Frontend-TRASHROUTES/issues"
   },

@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrashRoutes - Geolocalización de Recolección</title>
-    <!-- Mantenemos los estilos de los mapas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrashRoutes</title>
+
+    <!-- 1. Estilos y Script PRINCIPAL de Leaflet (OBLIGATORIO) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- 2. Estilos y Script de Leaflet Routing Machine (Siempre debajo del principal) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 </head>
+
 <body>
     <!-- Este es el contenedor vacío donde React inyectará toda tu aplicación -->
     <div id="root"></div>
@@ -18,4 +24,5 @@
     <!-- Le indicamos a Vite cuál es el archivo principal de React -->
     <script type="module" src="/app.jsx"></script>
 </body>
+
 </html>
